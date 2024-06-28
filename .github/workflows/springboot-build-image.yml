@@ -1,3 +1,5 @@
+name: Springboot docker build-image
+
 on:
   workflow_call:
     
@@ -29,6 +31,7 @@ jobs:
               -DskipTests \
               -Dspring-boot.build-image.imageName=ghcr.io/${{ github.repository }}:${{github.run_id}}
         docker tag ghcr.io/${{ github.repository }}:${{github.run_id}} ghcr.io/${{ github.repository }}:main
+        docker tag ghcr.io/${{ github.repository }}:${{github.run_id}} ghcr.io/${{ github.repository }}:$(date +%d%m%Y%H%M)
         docker images
     - name: docker push
       run: docker push -a ghcr.io/${{ github.repository }}
