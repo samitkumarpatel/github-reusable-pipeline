@@ -17,6 +17,9 @@ on:
         description: 'Build native image'
 jobs:
   jar-build-push:
+    permissions:
+      contents: read
+      packages: write
     name: Maven build
     runs-on: ubuntu-latest
     #if: github.event.inputs.build-jar 
