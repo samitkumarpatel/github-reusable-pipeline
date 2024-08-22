@@ -19,7 +19,7 @@ jobs:
   jar-build-push:
     name: Maven build
     runs-on: ubuntu-latest
-    if: github.event.inputs.build-jar 
+    #if: github.event.inputs.build-jar 
     steps:
       - uses: actions/checkout@v4
         name: Checkout repo
@@ -30,11 +30,11 @@ jobs:
         with:
           secrets: ${{ toJson(secrets) }}
   native-build-push:
-    if: github.event.inputs.native-image
+    #if: github.event.inputs.native-image
     uses: ./.github/workflows/graal-native.yml
     secrets: inherit
   
   docker-build-push:
-    if: github.event.inputs.build-image
+    #if: github.event.inputs.build-image
     uses: ./.github/workflows/buildpack.yml
     secrets: inherit
