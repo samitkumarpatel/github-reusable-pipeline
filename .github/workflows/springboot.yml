@@ -35,6 +35,6 @@ jobs:
     secrets: inherit
   
   docker-build-push:
-    #if: ${{ inputs.build-image == true }}
+    if: ${{ inputs.build-image == true }}
     uses: ./.github/workflows/buildpack.yml
     secrets: inherit
