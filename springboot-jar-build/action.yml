@@ -14,7 +14,7 @@ runs:
       java-version: '21'
       components: 'native-image'
       cache: 'maven'
-      github-token: ${{ secrets.GITHUB_TOKEN }}
+      github-token: ${{ fromJSON(inputs.secrets).GITHUB_TOKEN }}
       native-image-job-reports: 'true'
   
   - run: |
@@ -35,7 +35,7 @@ runs:
       EOF
     env:
       USER: ${{ github.actor }}
-      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      GITHUB_TOKEN: ${{ fromJSON(inputs.secrets).GITHUB_TOKEN }}
 
   - name: Publish maven artifact to GitHub Packages
     run: |
@@ -44,12 +44,12 @@ runs:
   - name: Publish maven artifact to GitHub Packages
     run: |
       #./mvnw -B native:compile
-      ./mvnw -B build-helper:parse-version versions:set -DnewVersion=1.0.${{github.run_number}}
+      ./mvnw -B build-helper:parse-version versions:set -DnewVersion=1.0.${{ github.run_number }}
       ./mvnw -B deploy
     env:
-      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      GITHUB_TOKEN: ${{ fromJSON(inputs.secrets).GITHUB_TOKEN }}
 
   - name: Github Release
     run: gh release create v1.0.${{github.run_number}} ./target/*.jar
     env:
-      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      GH_TOKEN: ${{ fromJSON(inputs.secrets).GITHUB_TOKEN }}

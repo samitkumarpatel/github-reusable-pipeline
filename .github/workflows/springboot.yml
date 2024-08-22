@@ -30,7 +30,7 @@ jobs:
         with:
           secrets: ${{ toJson(secrets) }}
   native-build-push:
-    #if: github.event.inputs.native-image
+    if: ${{ github.event.inputs.native-image == true }}
     uses: ./.github/workflows/graal-native.yml
     secrets: inherit
   
