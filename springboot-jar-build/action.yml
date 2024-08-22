@@ -17,7 +17,9 @@ runs:
       github-token: ${{ fromJSON(inputs.secrets).GITHUB_TOKEN }}
       native-image-job-reports: 'true'
   
-  - run: |
+  - name: settings.xml
+    shell: bash
+    run: |
       mkdir -p ~/.m2
       touch ~/.m2/settings.xml
       
@@ -38,10 +40,12 @@ runs:
       GITHUB_TOKEN: ${{ fromJSON(inputs.secrets).GITHUB_TOKEN }}
 
   - name: Publish maven artifact to GitHub Packages
+    shell: bash
     run: |
       ./mvnw -B clean install
   
   - name: Publish maven artifact to GitHub Packages
+    shell: bash
     run: |
       #./mvnw -B native:compile
       ./mvnw -B build-helper:parse-version versions:set -DnewVersion=1.0.${{ github.run_number }}
@@ -50,6 +54,7 @@ runs:
       GITHUB_TOKEN: ${{ fromJSON(inputs.secrets).GITHUB_TOKEN }}
 
   - name: Github Release
+    shell: bash
     run: gh release create v1.0.${{github.run_number}} ./target/*.jar
     env:
       GH_TOKEN: ${{ fromJSON(inputs.secrets).GITHUB_TOKEN }}

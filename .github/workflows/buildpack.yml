@@ -21,6 +21,7 @@ jobs:
         native-image-job-reports: 'true'
 
     - name: build buildpack image
+      shell: bash
       run: |
         ./mvnw -B spring-boot:build-image \
               -DskipTests \
@@ -40,4 +41,5 @@ jobs:
         password: ${{ secrets.GITHUB_TOKEN }}
 
     - name: push buildpack image
+      shell: bash
       run: docker push -a ghcr.io/${{ github.repository }}

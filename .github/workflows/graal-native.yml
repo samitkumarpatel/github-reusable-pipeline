@@ -21,6 +21,7 @@ jobs:
         native-image-job-reports: 'true'
     
     - name: build native image
+      shell: bash
       run: |
         echo "GRAALVM_HOME: $GRAALVM_HOME"
         echo "JAVA_HOME: $JAVA_HOME"
@@ -46,4 +47,5 @@ jobs:
         password: ${{ secrets.GITHUB_TOKEN }}
     
     - name: push native images
+      shell: bash
       run: docker push -a ghcr.io/${{ github.repository_owner }}/${{github.event.repository.name}}
