@@ -19,6 +19,9 @@ jobs:
   jar-build-push:
     name: jar build
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      packages: write
     if: ${{ inputs.build-jar == true }}
     steps:
       - uses: actions/checkout@v4
