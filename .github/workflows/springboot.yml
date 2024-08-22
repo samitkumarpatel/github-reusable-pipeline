@@ -1,9 +1,5 @@
 name: springboot build [jar, docker-images]
 
-permissions:
-  contents: read
-  packages: write
-
 on:
   workflow_call:
     inputs:
