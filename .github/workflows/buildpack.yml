@@ -1,16 +1,17 @@
-name: Springboot docker build-image
+name: buildpack build & publish
 
 on:
   workflow_call:
-    
+
 jobs:
-  springboot-build-image:
+  buildpack-build:
     runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      packages: write
     steps:
     - uses: actions/checkout@v4
+      with:
+        ref: ${{ github.ref }}
+        fetch-depth: 0 # fetch the whole repo history
+    
     - uses: graalvm/setup-graalvm@v1
       with:
         version: 'latest'
@@ -19,19 +20,24 @@ jobs:
         github-token: ${{ secrets.GITHUB_TOKEN }}
         native-image-job-reports: 'true'
 
-    - name: Log in to the Container registry
+    - name: build buildpack image
+      run: |
+        ./mvnw -B spring-boot:build-image \
+              -DskipTests \
+              -Dspring-boot.build-image.imageName=ghcr.io/${{ github.repository }}:${{github.run_id}}
+        
+        docker tag ghcr.io/${{ github.repository }}:${{github.run_id}} ghcr.io/${{ github.repository }}:main
+        
+        docker tag ghcr.io/${{ github.repository }}:${{github.run_id}} ghcr.io/${{ github.repository }}:$(date +%d%m%Y%H%M)
+        
+        docker images
+
+    - name: Log in to ghcr.io
       uses: docker/login-action@v3
       with:
         registry: ghcr.io
         username: ${{ github.actor }}
         password: ${{ secrets.GITHUB_TOKEN }}
-    - name: Docker build
-      run: |
-        ./mvnw -B spring-boot:build-image \
-              -DskipTests \
-              -Dspring-boot.build-image.imageName=ghcr.io/${{ github.repository }}:${{github.run_id}}
-        docker tag ghcr.io/${{ github.repository }}:${{github.run_id}} ghcr.io/${{ github.repository }}:main
-        docker tag ghcr.io/${{ github.repository }}:${{github.run_id}} ghcr.io/${{ github.repository }}:$(date +%d%m%Y%H%M)
-        docker images
-    - name: docker push
+
+    - name: push buildpack image
       run: docker push -a ghcr.io/${{ github.repository }}

@@ -1,0 +1,40 @@
+name: springboot build [jar, docker-images]
+
+on:
+  workflow_call:
+    inputs:
+      build-jar:
+        type: boolean
+        required: true
+        description: 'Build jar'
+      build-image:
+        type: boolean
+        required: false
+        description: 'Build docker image'
+      native-image:
+        type: boolean
+        required: false
+        description: 'Build native image'
+jobs:
+  jar-build-push:
+    name: Maven build
+    runs-on: ubuntu-latest
+    if: github.event.inputs.build-jar 
+    steps:
+      - uses: actions/checkout@v4
+        name: Checkout repo
+        with:
+          fetch-depth: 0
+      - uses: samitkumarpatel/github-reusable-pipeline/springboot-jar-build@main
+        name: Build jar
+        with:
+          secrets: ${{ toJson(secrets) }}
+  native-build-push:
+    if: github.event.inputs.native-image
+    uses: ./.github/workflows/graal-native.yml
+    secrets: inherit
+  
+  docker-build-push:
+    if: github.event.inputs.build-image
+    uses: ./.github/workflows/buildpack.yml
+    secrets: inherit
