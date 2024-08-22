@@ -1,5 +1,9 @@
 name: springboot build [jar, docker-images]
 
+permissions:
+  contents: read
+  packages: write
+
 on:
   workflow_call:
     inputs:
@@ -19,9 +23,6 @@ jobs:
   jar-build-push:
     name: jar build
     runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      packages: write
     if: ${{ github.event.inputs.build-jar == true }}
     steps:
       - uses: actions/checkout@v4
