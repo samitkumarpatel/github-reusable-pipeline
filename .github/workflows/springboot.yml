@@ -17,12 +17,12 @@ on:
         description: 'Build native image'
 jobs:
   jar-build-push:
-    # permissions:
-    #   contents: read
-    #   packages: write
-    name: Maven build
+    name: jar build
     runs-on: ubuntu-latest
-    #if: github.event.inputs.build-jar 
+    permissions:
+      contents: read
+      packages: write
+    if: ${{ github.event.inputs.build-jar == true }}
     steps:
       - uses: actions/checkout@v4
         name: Checkout repo
@@ -38,6 +38,6 @@ jobs:
     secrets: inherit
   
   docker-build-push:
-    #if: github.event.inputs.build-image
+    if: ${{ github.event.inputs.build-image == true }}
     uses: ./.github/workflows/buildpack.yml
     secrets: inherit
